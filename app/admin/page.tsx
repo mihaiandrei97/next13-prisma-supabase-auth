@@ -10,13 +10,18 @@ export default async function Home() {
     redirect("/login");
   }
 
-  const notes = await prisma.note.findMany({
-    where: { userId: data.session.user.id },
+  const profile = await prisma.profile.findUnique({
+    where: { id: data.session.user.id },
   });
+
+  if (profile?.role !== "admin") {
+    redirect("/");
+  }
+
   return (
     <main>
-      <h1 className="text-2xl text-center mb-8">Protected page</h1>
-      <pre>{JSON.stringify({ session: data.session, notes }, null, 4)}</pre>
+      <h1 className="text-2xl text-center mb-8">Admin page</h1>
+      <pre>{JSON.stringify({profile}, null, 4)}</pre>
     </main>
   );
 }
